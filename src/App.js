@@ -8,31 +8,49 @@ function App() {
     11: [true, true, false],
   });
 
+  function createSetWeek(week) {
+    return (values) => {
+      setWeeks((prev) => ({ ...prev, [week]: values }));
+    };
+  }
+
   return (
     <div className="App">
-      {Object.entries(weeks).map(([week, value]) => (
-        <Week week={week} val={value} />
+      {Object.entries(weeks).map(([week, values]) => (
+        <Week values={values} setWeek={createSetWeek(week)} />
       ))}
     </div>
   );
 }
 
-function Week({ week, val }) {
+function Week({ values, setWeek }) {
+  function createSetBox(index) {
+    return (value) => {
+      const newValues = [...values];
+      newValues[index] = value;
+      setWeek(newValues);
+    };
+  }
+
   return (
     <div className="week">
-      {val.map((isChecked) => (
-        <Checkbox isChecked={isChecked} />
+      {values.map((isChecked, index) => (
+        <Checkbox isChecked={isChecked} setBox={createSetBox(index)} />
       ))}
     </div>
   );
 }
 
-function Checkbox({ isChecked }) {
+function Checkbox({ isChecked, setBox }) {
+  function handleCheckboxChange() {
+    setBox(!isChecked);
+  }
+
   return (
     <input
       type="checkbox"
       checked={isChecked}
-      // onChange={handleCheckboxChange}
+      onChange={handleCheckboxChange}
     />
   );
 }
