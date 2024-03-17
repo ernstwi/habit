@@ -5,8 +5,8 @@ import "./App.css";
 
 function App() {
   const [weeks, setWeeks] = useState({
-    10: parseInt(localStorage.getItem("2024-10") ?? 3),
-    11: parseInt(localStorage.getItem("2024-11") ?? 2),
+    10: parseInt(localStorage.getItem("2024-10") ?? 0),
+    11: parseInt(localStorage.getItem("2024-11") ?? 0),
   });
 
   useEffect(() => {
