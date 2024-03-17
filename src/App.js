@@ -41,12 +41,12 @@ function Week({ week, value, setWeek }) {
     <Box align="center" pad="large" direction="row" gap="small">
       <Text>{week}</Text>
       <Meter
-        color={value === 3 ? "status-ok" : "status-warning"}
+        color={`accent-${4 - value}`}
         type="bar"
         pad="small"
         value={(100 / 3) * value}
       />
-      <Text color={value === 3 ? "status-ok" : "default"}>{value}</Text>
+      <Text color={value === 3 ? "accent-1" : "default"}>{value}</Text>
       <Button label="-" onClick={() => setWeek(Math.max(0, value - 1))} />
       <Button label="+" onClick={() => setWeek(Math.min(3, value + 1))} />
     </Box>
