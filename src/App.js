@@ -22,13 +22,18 @@ function App() {
   return (
     <div className="App">
       {Object.entries(weeks).map(([week, values]) => (
-        <Week key={week} values={values} setWeek={createSetWeek(week)} />
+        <Week
+          key={week}
+          week={week}
+          values={values}
+          setWeek={createSetWeek(week)}
+        />
       ))}
     </div>
   );
 }
 
-function Week({ values, setWeek }) {
+function Week({ week, values, setWeek }) {
   function createSetBox(index) {
     return (value) => {
       const newValues = [...values];
@@ -39,6 +44,7 @@ function Week({ values, setWeek }) {
 
   return (
     <div className="week">
+      {week}:{" "}
       {values.map((isChecked, index) => (
         <Checkbox
           key={index}
