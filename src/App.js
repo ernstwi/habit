@@ -1,41 +1,39 @@
 import { useState, useEffect } from "react";
 
-import logo from "./logo.svg";
 import "./App.css";
 
 function App() {
+  const [weeks, setWeeks] = useState({
+    10: [true, true, true],
+    11: [true, true, false],
+  });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Checkbox />
-      </header>
+      {Object.entries(weeks).map(([week, value]) => (
+        <Week week={week} val={value} />
+      ))}
     </div>
   );
 }
 
-function Checkbox() {
-  const [isChecked, setIsChecked] = useState(
-    localStorage.getItem("isChecked") === "true",
-  );
-
-  function handleCheckboxChange() {
-    setIsChecked(!isChecked);
-  }
-
-  // Write state to local storage
-  useEffect(() => {
-    localStorage.setItem("isChecked", isChecked);
-  }, [isChecked]);
-
+function Week({ week, val }) {
   return (
-    <div>
-      <input
-        type="checkbox"
-        checked={isChecked}
-        onChange={handleCheckboxChange}
-      />
+    <div className="week">
+      {val.map((isChecked) => (
+        <Checkbox isChecked={isChecked} />
+      ))}
     </div>
+  );
+}
+
+function Checkbox({ isChecked }) {
+  return (
+    <input
+      type="checkbox"
+      checked={isChecked}
+      // onChange={handleCheckboxChange}
+    />
   );
 }
 
