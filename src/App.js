@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Checkbox />
       </header>
+    </div>
+  );
+}
+
+function Checkbox() {
+  const [isChecked, setIsChecked] = useState(
+    localStorage.getItem("isChecked") === "true",
+  );
+
+  function handleCheckboxChange() {
+    setIsChecked(!isChecked);
+  }
+
+  // Write state to local storage
+  useEffect(() => {
+    localStorage.setItem("isChecked", isChecked);
+  }, [isChecked]);
+
+  return (
+    <div>
+      <input
+        type="checkbox"
+        checked={isChecked}
+        onChange={handleCheckboxChange}
+      />
     </div>
   );
 }
