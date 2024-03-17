@@ -4,9 +4,14 @@ import "./App.css";
 
 function App() {
   const [weeks, setWeeks] = useState({
-    10: [true, true, true],
-    11: [true, true, false],
+    10: JSON.parse(localStorage.getItem("2024-10")) ?? [false, false, false],
+    11: JSON.parse(localStorage.getItem("2024-11")) ?? [false, false, false],
   });
+
+  useEffect(() => {
+    localStorage.setItem("2024-10", JSON.stringify(weeks[10]));
+    localStorage.setItem("2024-11", JSON.stringify(weeks[11]));
+  }, [weeks]);
 
   function createSetWeek(week) {
     return (values) => {
@@ -17,7 +22,7 @@ function App() {
   return (
     <div className="App">
       {Object.entries(weeks).map(([week, values]) => (
-        <Week values={values} setWeek={createSetWeek(week)} />
+        <Week key={week} values={values} setWeek={createSetWeek(week)} />
       ))}
     </div>
   );
@@ -35,7 +40,11 @@ function Week({ values, setWeek }) {
   return (
     <div className="week">
       {values.map((isChecked, index) => (
-        <Checkbox isChecked={isChecked} setBox={createSetBox(index)} />
+        <Checkbox
+          key={index}
+          isChecked={isChecked}
+          setBox={createSetBox(index)}
+        />
       ))}
     </div>
   );
