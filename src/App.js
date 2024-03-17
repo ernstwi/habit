@@ -1,72 +1,55 @@
 import { useState, useEffect } from "react";
+import { Grommet, grommet, Box, Meter, Text, Button } from "grommet";
 
 import "./App.css";
 
 function App() {
   const [weeks, setWeeks] = useState({
-    10: JSON.parse(localStorage.getItem("2024-10")) ?? [false, false, false],
-    11: JSON.parse(localStorage.getItem("2024-11")) ?? [false, false, false],
+    10: parseInt(localStorage.getItem("2024-10") ?? 3),
+    11: parseInt(localStorage.getItem("2024-11") ?? 2),
   });
 
   useEffect(() => {
-    localStorage.setItem("2024-10", JSON.stringify(weeks[10]));
-    localStorage.setItem("2024-11", JSON.stringify(weeks[11]));
+    localStorage.setItem("2024-10", weeks[10]);
+    localStorage.setItem("2024-11", weeks[11]);
   }, [weeks]);
 
   function createSetWeek(week) {
-    return (values) => {
-      setWeeks((prev) => ({ ...prev, [week]: values }));
-    };
-  }
-
-  return (
-    <div className="App">
-      {Object.entries(weeks).map(([week, values]) => (
-        <Week
-          key={week}
-          week={week}
-          values={values}
-          setWeek={createSetWeek(week)}
-        />
-      ))}
-    </div>
-  );
-}
-
-function Week({ week, values, setWeek }) {
-  function createSetBox(index) {
     return (value) => {
-      const newValues = [...values];
-      newValues[index] = value;
-      setWeek(newValues);
+      setWeeks((prev) => ({ ...prev, [week]: value }));
     };
   }
 
   return (
-    <div className="week">
-      {week}:{" "}
-      {values.map((isChecked, index) => (
-        <Checkbox
-          key={index}
-          isChecked={isChecked}
-          setBox={createSetBox(index)}
-        />
-      ))}
-    </div>
+    <Grommet theme={grommet} style={{ fontFamily: "monospace" }}>
+      <Box fill align="center" justify="center">
+        {Object.entries(weeks).map(([week, value]) => (
+          <Week
+            key={week}
+            week={week}
+            value={value}
+            setWeek={createSetWeek(week)}
+          />
+        ))}
+      </Box>
+    </Grommet>
   );
 }
 
-function Checkbox({ isChecked, setBox }) {
-  function handleCheckboxChange() {
-    setBox(!isChecked);
-  }
-
+function Week({ week, value, setWeek }) {
   return (
-    <input
-      type="checkbox"
-      checked={isChecked}
-      onChange={handleCheckboxChange}
-    />
+    <Box align="center" pad="large" direction="row" gap="small">
+      <Text>{week}</Text>
+      <Meter
+        color={value === 3 ? "status-ok" : "status-warning"}
+        type="bar"
+        pad="small"
+        value={(100 / 3) * value}
+      />
+      <Text color={value === 3 ? "status-ok" : "default"}>{value}</Text>
+      <Button label="-" onClick={() => setWeek(Math.max(0, value - 1))} />
+      <Button label="+" onClick={() => setWeek(Math.min(3, value + 1))} />
+    </Box>
   );
 }
 
