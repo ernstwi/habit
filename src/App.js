@@ -3,15 +3,45 @@ import { Grommet, grommet, Box, Meter, Text, Button } from "grommet";
 
 import "./App.css";
 
+const START_DATE = new Date("2024-03-01");
+
+function getMondaysBetween(startDate, endDate) {
+  function startOfDay(date) {
+    return new Date(date.setHours(0, 0, 0, 0));
+  }
+
+  startDate = startOfDay(startDate);
+  endDate = startOfDay(endDate);
+
+  // Set to the next Monday if the start date is not a Monday
+  const day = startDate.getDay();
+  startDate.setDate(startDate.getDate() + ((7 - day + 1) % 7));
+
+  const res = [];
+  while (startDate <= endDate) {
+    res.push(new Date(startDate));
+    startDate.setDate(startDate.getDate() + 7);
+  }
+
+  return res;
+}
+
+const dates = getMondaysBetween(START_DATE, new Date()).map((date) =>
+  date.toDateString(),
+);
+
 function App() {
-  const [weeks, setWeeks] = useState({
-    10: parseInt(localStorage.getItem("2024-10") ?? 0),
-    11: parseInt(localStorage.getItem("2024-11") ?? 0),
-  });
+  const [weeks, setWeeks] = useState(
+    dates.reduce((acc, date) => {
+      acc[date] = parseInt(localStorage.getItem(date) ?? 0);
+      return acc;
+    }, {}),
+  );
 
   useEffect(() => {
-    localStorage.setItem("2024-10", weeks[10]);
-    localStorage.setItem("2024-11", weeks[11]);
+    dates.forEach((date) => {
+      localStorage.setItem(date, weeks[date]);
+    });
   }, [weeks]);
 
   function createSetWeek(week) {
@@ -31,6 +61,13 @@ function App() {
             setWeek={createSetWeek(week)}
           />
         ))}
+        <Button
+          label="Reset"
+          onClick={() => {
+            localStorage.clear();
+            window.location.reload();
+          }}
+        />
       </Box>
     </Grommet>
   );
