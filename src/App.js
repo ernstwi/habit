@@ -78,7 +78,7 @@ function Week({ week, value, setWeek }) {
     <Box align="center" pad="large" direction="row" gap="small">
       <Text>{week}</Text>
       <Meter
-        color={`accent-${4 - value}`}
+        color={value >= 3 ? "focus" : "accent-4"}
         type="bar"
         pad="small"
         value={(100 / 3) * value}
