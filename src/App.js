@@ -26,9 +26,9 @@ function getMondaysBetween(startDate, endDate) {
   return res;
 }
 
-const dates = getMondaysBetween(START_DATE, new Date()).map((date) =>
-  date.toDateString(),
-);
+const dates = getMondaysBetween(START_DATE, new Date())
+  .reverse()
+  .map((date) => date.toDateString());
 
 function App() {
   const [weeks, setWeeks] = useState(
