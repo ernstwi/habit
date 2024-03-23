@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Grommet, grommet, Box, Meter, Text, Button } from "grommet";
+import { Stack, Grommet, Box, Text, Button } from "grommet";
+import { Checkmark } from "grommet-icons";
+import useSound from "use-sound";
+import clear from "./clear.wav";
 
-import "./App.css";
-
-const START_DATE = new Date("2024-03-01");
+const START_DATE = new Date("2024-02-01");
 
 function getMondaysBetween(startDate, endDate) {
   function startOfDay(date) {
@@ -24,6 +25,10 @@ function getMondaysBetween(startDate, endDate) {
   }
 
   return res;
+}
+
+function formatDate(date) {
+  return date.getDate() + "/" + (date.getMonth() + 1);
 }
 
 const dates = getMondaysBetween(START_DATE, new Date())
@@ -51,8 +56,8 @@ function App() {
   }
 
   return (
-    <Grommet theme={grommet} style={{ fontFamily: "monospace" }}>
-      <Box fill align="center" justify="center">
+    <Grommet>
+      <Box align="center">
         {Object.entries(weeks).map(([week, value]) => (
           <Week
             key={week}
@@ -62,6 +67,7 @@ function App() {
           />
         ))}
         <Button
+          margin="large"
           label="Reset"
           onClick={() => {
             localStorage.clear();
@@ -73,20 +79,74 @@ function App() {
   );
 }
 
+function color(value) {
+  const colors = {
+    1: "linear-gradient(0deg, rgb(240 186 23) 0%, rgb(204 236 20) 100%)",
+    2: "linear-gradient(0deg, rgba(23,201,240) 0%, rgba(20,236,227) 100%)",
+    3: "linear-gradient(0deg, rgb(43, 235, 16) 0%, rgb(18 255 149) 100%)",
+  };
+  return colors[Math.min(value, 3)];
+}
+
 function Week({ week, value, setWeek }) {
+  const [playClear] = useSound(clear);
   return (
-    <Box align="center" pad="large" direction="row" gap="small">
-      <Text>{week}</Text>
-      <Meter
-        color={value >= 3 ? "focus" : "accent-4"}
-        type="bar"
-        pad="small"
-        value={(100 / 3) * value}
+    <Stack fill style={{ height: "70px" }}>
+      <Box
+        style={{
+          transition: "width 0.15s ease-in-out",
+        }}
+        background={color(value)}
+        width={(100 / 3) * value + "%"}
+        height="70px"
       />
-      <Text color={value >= 3 ? "status-ok" : "default"}>{value}</Text>
-      <Button label="-" onClick={() => setWeek(Math.max(0, value - 1))} />
-      <Button label="+" onClick={() => setWeek(value + 1)} />
-    </Box>
+      <Box direction="row" fill justify="start" pad="medium" align="center">
+        <Text
+          weight="bold"
+          style={{ color: "white", textShadow: "0.5px 0.5px 1px black" }}
+        >
+          {formatDate(new Date(week))}
+        </Text>
+      </Box>
+      <Box direction="row" fill justify="center" align="center">
+        <Stack>
+          <Box direction="row" width="1em" justify="center">
+            <Text
+              weight="bold"
+              size="large"
+              style={{ color: "white", textShadow: "0.5px 0.5px 1px black" }}
+            >
+              {value}
+            </Text>
+          </Box>
+          {value >= 3 && (
+            <Stack>
+              <Checkmark
+                style={{ marginLeft: "1.55em", marginTop: "0.1em" }}
+                color="pink"
+              />
+              <Checkmark style={{ marginLeft: "1.5em" }} color="white" />
+            </Stack>
+          )}
+        </Stack>
+      </Box>
+      <Box direction="row" justify="between" fill>
+        <Box
+          fill
+          focusIndicator={false}
+          onClick={() => setWeek(Math.max(0, value - 1))}
+        />
+        <Box
+          fill
+          focusIndicator={false}
+          onClick={() => {
+            const newValue = Math.min(value + 1, 9);
+            setWeek(newValue);
+            if (newValue === 3) playClear();
+          }}
+        />
+      </Box>
+    </Stack>
   );
 }
 
