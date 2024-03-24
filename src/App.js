@@ -82,7 +82,7 @@ function App() {
 function color(value) {
   const colors = {
     1: "linear-gradient(0deg, rgb(240 186 23) 0%, rgb(204 236 20) 100%)",
-    2: "linear-gradient(0deg, rgba(23,201,240) 0%, rgba(20,236,227) 100%)",
+    2: "linear-gradient(0deg, rgb(64 211 243) 0%, rgb(108 255 234) 100%)",
     3: "linear-gradient(0deg, rgb(43, 235, 16) 0%, rgb(18 255 149) 100%)",
   };
   return colors[Math.max(1, Math.min(value, 3))];
