@@ -6,8 +6,8 @@ import clear from "./clear.wav";
 
 const START_DATE = new Date("2024-02-01");
 
-function getMondaysBetween(startDate, endDate) {
-  function startOfDay(date) {
+function getMondaysBetween(startDate: Date, endDate: Date) {
+  function startOfDay(date: Date) {
     return new Date(date.setHours(0, 0, 0, 0));
   }
 
@@ -18,7 +18,7 @@ function getMondaysBetween(startDate, endDate) {
   const day = startDate.getDay();
   startDate.setDate(startDate.getDate() + ((7 - day + 1) % 7));
 
-  const res = [];
+  const res: Date[] = [];
   while (startDate <= endDate) {
     res.push(new Date(startDate));
     startDate.setDate(startDate.getDate() + 7);
@@ -27,7 +27,7 @@ function getMondaysBetween(startDate, endDate) {
   return res;
 }
 
-function formatDate(date) {
+function formatDate(date: Date) {
   return date.getDate() + "/" + (date.getMonth() + 1);
 }
 
@@ -37,20 +37,20 @@ const dates = getMondaysBetween(START_DATE, new Date())
 
 function App() {
   const [weeks, setWeeks] = useState(
-    dates.reduce((acc, date) => {
-      acc[date] = parseInt(localStorage.getItem(date) ?? 0);
+    dates.reduce((acc: Record<string, number>, date) => {
+      acc[date] = parseInt(localStorage.getItem(date) ?? "0");
       return acc;
     }, {}),
   );
 
   useEffect(() => {
     dates.forEach((date) => {
-      localStorage.setItem(date, weeks[date]);
+      localStorage.setItem(date, weeks[date].toString());
     });
   }, [weeks]);
 
-  function createSetWeek(week) {
-    return (value) => {
+  function createSetWeek(week: string) {
+    return (value: number) => {
       setWeeks((prev) => ({ ...prev, [week]: value }));
     };
   }
@@ -79,8 +79,8 @@ function App() {
   );
 }
 
-function color(value) {
-  const colors = {
+function color(value: number) {
+  const colors: Record<number, string> = {
     1: "linear-gradient(0deg, rgb(240 186 23) 0%, rgb(204 236 20) 100%)",
     2: "linear-gradient(0deg, rgb(64 211 243) 0%, rgb(108 255 234) 100%)",
     3: "linear-gradient(0deg, rgb(43, 235, 16) 0%, rgb(18 255 149) 100%)",
@@ -88,7 +88,15 @@ function color(value) {
   return colors[Math.max(1, Math.min(value, 3))];
 }
 
-function Week({ week, value, setWeek }) {
+function Week({
+  week,
+  value,
+  setWeek,
+}: {
+  week: string;
+  value: number;
+  setWeek: (value: number) => void;
+}) {
   const [playClear] = useSound(clear);
   return (
     <Stack fill style={{ height: "70px" }}>
