@@ -1,5 +1,14 @@
-import { useState, useEffect } from "react";
-import { Stack, Grommet, Box, Text, Button } from "grommet";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Grommet,
+  Main,
+  PageHeader,
+  Stack,
+  Text,
+  ThemeType,
+} from "grommet";
 import { Checkmark } from "grommet-icons";
 import useSound from "use-sound";
 import clear from "./clear.wav";
@@ -35,6 +44,18 @@ const dates = getMondaysBetween(START_DATE, new Date())
   .reverse()
   .map((date) => date.toDateString());
 
+const theme: ThemeType = {
+  global: {
+    colors: {
+      background: "black",
+      text: "white",
+    },
+  },
+  text: {
+    extend: { fontWeight: "bold", textShadow: "0.5px 0.5px 1px black" },
+  },
+};
+
 function App() {
   const [weeks, setWeeks] = useState(
     dates.reduce((acc: Record<string, number>, date) => {
@@ -56,8 +77,9 @@ function App() {
   }
 
   return (
-    <Grommet>
-      <Box align="center">
+    <Grommet theme={theme}>
+      <PageHeader title="Habit Tracker" margin={{ left: "small" }} />
+      <Main align="center">
         {Object.entries(weeks).map(([week, value]) => (
           <Week
             key={week}
@@ -74,7 +96,7 @@ function App() {
             window.location.reload();
           }}
         />
-      </Box>
+      </Main>
     </Grommet>
   );
 }
@@ -109,23 +131,12 @@ function Week({
         height="70px"
       />
       <Box direction="row" fill justify="start" pad="medium" align="center">
-        <Text
-          weight="bold"
-          style={{ color: "white", textShadow: "0.5px 0.5px 1px black" }}
-        >
-          {formatDate(new Date(week))}
-        </Text>
+        <Text>{formatDate(new Date(week))}</Text>
       </Box>
       <Box direction="row" fill justify="center" align="center">
         <Stack>
           <Box direction="row" width="1em" justify="center">
-            <Text
-              weight="bold"
-              size="large"
-              style={{ color: "white", textShadow: "0.5px 0.5px 1px black" }}
-            >
-              {value}
-            </Text>
+            <Text size="large">{value}</Text>
           </Box>
           {value >= 3 && (
             <Stack>
