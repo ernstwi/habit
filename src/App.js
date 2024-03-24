@@ -85,7 +85,7 @@ function color(value) {
     2: "linear-gradient(0deg, rgba(23,201,240) 0%, rgba(20,236,227) 100%)",
     3: "linear-gradient(0deg, rgb(43, 235, 16) 0%, rgb(18 255 149) 100%)",
   };
-  return colors[Math.min(value, 3)];
+  return colors[Math.max(1, Math.min(value, 3))];
 }
 
 function Week({ week, value, setWeek }) {
